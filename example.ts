@@ -34,33 +34,26 @@ function makeEggs(deps: {
   // The user provides the style of eggs that should be made.
   // For example, "fried" or "scrambled" eggs.
   return function (style: string): string {
-    // The Egg Maker performs the following steps:
-
-    // 1. It takes eggs from the fridge
     const eggs = deps.takeEggs();
-
-    // 2. It checks whether it got any eggs.
-    const gotEggs = eggs > 0;
-
-    // 3. If it got no eggs, it gives up.
-    if (!gotEggs) throw new Error(`something went wrong`);
-
-    // 4. It makes the eggs in the desired style.
+    if (eggs < 0) throw new Error(`something went wrong`);
     return `Made ${eggs} ${style} eggs.`;
   };
 }
 
 // Using `inject` we create a an Egg Maker factory.
 const createEggMaker: Factory<EggMaker> = inject({
-  // This builder function receives the `takeEggs` dependency.
+  // Each builder function will receive a partial EggMaker.
+  // In this case, `makeEggs` will use the `takeEggs` dependency.
+  // Cyclic dependencies must be avoided.
   makeEggs,
-  // This builder function simply returns the `takeEggs` service..
+  // This builder function simply returns the `takeEggs` function,
+  // since it uses no dependencies.
   takeEggs: () => takeEggs,
 });
 
 // # Experiments
 
-// Define a helpful logging function.
+// First, we define a helpful logging function.
 let testNumber = 0;
 function test() {
   console.log(fmt.bold(fmt.underline(`\nTest ${++testNumber}`)));
@@ -108,7 +101,7 @@ test();
 // The Egg Maker 3 allows even deeper inspection.
 // All behavior will be logged to the console.
 
-// This function creates a hook that logs service behavior.
+// This function creates a hook that logs when a function is used.
 // deno-lint-ignore no-explicit-any
 function logger<F extends (...x: any[]) => any>(
   name: string,
