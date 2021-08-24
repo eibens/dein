@@ -23,8 +23,8 @@ Documentation is still work in progress. Fortunately, the source code is rather
 minimal:
 
 - [inject.ts](inject.ts) for creating new systems.
-- [hooks.ts](hooks.ts) for defining service overrides.
-- [chain.ts](chain.ts) for combining hooks.
+- [hooks.ts](hooks.ts) for defining overrides.
+- [chain.ts](chain.ts) for combining overrides.
 - [mod.ts](mod.ts) exports all above.
 
 # Contributing
